@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>WPC Kalkulátor – PLN na EUR</title>
+  <title>WPC Kalkulátor – PLN / USD na EUR 4 Deni with ❤️</title>
   <style>
     :root {
       --primary: #2563eb;
@@ -31,7 +31,7 @@
     }
 
     .container {
-      max-width: 1280px;
+      max-width: 1400px;
       margin: 0 auto;
     }
 
@@ -53,7 +53,7 @@
 
     .top-bar {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
       gap: 16px;
       background: var(--card);
       padding: 18px 20px;
@@ -80,10 +80,9 @@
       gap: 8px;
     }
 
-    .stat-input-group input {
-      width: 110px;
+    .stat-input-group input, .stat-input-group select {
       padding: 8px 10px;
-      font-size: 1rem;
+      font-size: 0.95rem;
       font-weight: 600;
       border: 1px solid var(--border);
       border-radius: 6px;
@@ -91,14 +90,18 @@
       color: var(--text);
     }
 
-    .stat-input-group input:focus {
+    .stat-input-group input {
+      width: 105px;
+    }
+
+    .stat-input-group input:focus, .stat-input-group select:focus {
       background: #fff;
       border-color: var(--primary);
       outline: none;
     }
 
     .rate-status {
-      font-size: 0.8rem;
+      font-size: 0.78rem;
       color: var(--muted);
       margin-top: 4px;
     }
@@ -158,13 +161,13 @@
       width: 100%;
       border-collapse: collapse;
       text-align: left;
-      min-width: 980px;
+      min-width: 1100px;
     }
 
     th {
       background: #f8fafc;
-      padding: 12px 16px;
-      font-size: 0.8rem;
+      padding: 12px 14px;
+      font-size: 0.78rem;
       font-weight: 700;
       color: var(--muted);
       text-transform: uppercase;
@@ -173,10 +176,10 @@
     }
 
     td {
-      padding: 12px 16px;
+      padding: 12px 14px;
       border-bottom: 1px solid var(--border);
       vertical-align: middle;
-      font-size: 0.95rem;
+      font-size: 0.92rem;
     }
 
     tr:hover td {
@@ -185,10 +188,10 @@
 
     .table-input {
       width: 100%;
-      padding: 8px 10px;
+      padding: 7px 9px;
       border: 1px solid var(--border);
       border-radius: 6px;
-      font-size: 0.95rem;
+      font-size: 0.92rem;
       background: #fff;
     }
 
@@ -202,7 +205,26 @@
       text-align: right;
     }
 
-    /* Zľavový panel */
+    .currency-select {
+      width: 75px;
+      padding: 7px 6px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-weight: 600;
+      background: #f8fafc;
+    }
+
+    .input-mode-badge {
+      display: inline-block;
+      font-size: 0.7rem;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: #e0f2fe;
+      color: #0369a1;
+      margin-top: 4px;
+      font-weight: 600;
+    }
+
     .discount-picker {
       display: flex;
       flex-direction: column;
@@ -211,19 +233,22 @@
 
     .discount-buttons {
       display: flex;
-      gap: 4px;
+      gap: 3px;
       flex-wrap: wrap;
+      max-width: 290px;
     }
 
     .pill-btn {
       background: #f1f5f9;
       border: 1px solid var(--border);
-      padding: 4px 8px;
+      padding: 3px 6px;
       border-radius: 4px;
-      font-size: 0.75rem;
+      font-size: 0.72rem;
       font-weight: 600;
       cursor: pointer;
       color: var(--muted);
+      min-width: 38px;
+      text-align: center;
     }
 
     .pill-btn.active {
@@ -236,13 +261,14 @@
       display: flex;
       align-items: center;
       gap: 6px;
-      font-size: 0.8rem;
+      font-size: 0.78rem;
       color: var(--muted);
+      margin-top: 2px;
     }
 
     .custom-discount-wrap input {
-      width: 60px;
-      padding: 4px 6px;
+      width: 55px;
+      padding: 3px 5px;
       border: 1px solid var(--border);
       border-radius: 4px;
       font-size: 0.8rem;
@@ -255,7 +281,7 @@
     }
 
     .price-final {
-      font-size: 1.05rem;
+      font-size: 1rem;
       font-weight: 700;
       color: var(--success);
     }
@@ -275,45 +301,50 @@
       background: #fcfdfe;
       border-top: 1px solid var(--border);
     }
-
-    @media (max-width: 768px) {
-      body {
-        padding: 14px;
-      }
-    }
   </style>
 </head>
 <body>
 
 <div class="container">
   <header>
-    <h1>WPC Kalkulátor: Cenník & Kurz PLN → EUR</h1>
-    <p class="subtitle">Prepočet nákupných cien za bežný meter (bm) a surový m² z poľských zlotých</p>
+    <h1>WPC Kalkulátor: Cenník & Kurzy (PLN / USD → EUR) 4 Deni with ❤️</h1>
+    <p class="subtitle">Obojsmerný prepočet ceny za bežný meter (bm) a surový m² (bez medzery)</p>
   </header>
 
-  <!-- Vrchný panel kurzu -->
+  <!-- Vrchný panel kurzov -->
   <div class="top-bar">
+    <!-- Kurz PLN -->
     <div class="stat-box">
-      <label for="ecb-rate">Základný kurz (1 PLN = EUR)</label>
+      <label for="rate-pln">Kurz 1 PLN = EUR</label>
       <div class="stat-input-group">
-        <input type="number" step="0.0001" id="ecb-rate" value="0.2330" onchange="manualRateChanged()">
-        <button class="btn btn-outline" onclick="fetchLiveRate()" title="Obnoviť z ECB">🔄</button>
+        <input type="number" step="0.0001" id="rate-pln" value="0.2330" onchange="manualRateChanged()">
+        <button class="btn btn-outline" onclick="fetchLiveRates()" title="Obnoviť kurzy">🔄</button>
       </div>
-      <div id="rate-date" class="rate-status">Načítavam kurz...</div>
+      <div id="rate-date-pln" class="rate-status">Načítavam kurz...</div>
     </div>
 
+    <!-- Kurz USD -->
     <div class="stat-box">
-      <label for="buffer-percent">Prirážka ku kurzu / Rezerva (%)</label>
+      <label for="rate-usd">Kurz 1 USD = EUR</label>
+      <div class="stat-input-group">
+        <input type="number" step="0.0001" id="rate-usd" value="0.8650" onchange="manualRateChanged()">
+      </div>
+      <div id="rate-date-usd" class="rate-status">Načítavam kurz...</div>
+    </div>
+
+    <!-- Buffer / Poplatok -->
+    <div class="stat-box">
+      <label for="buffer-percent">Prirážka / Poplatok (%)</label>
       <div class="stat-input-group">
         <input type="number" step="0.1" id="buffer-percent" value="0.0" onchange="renderAll()">
-        <span style="color: var(--muted); font-size: 0.85rem;">napr. +1 % poplatok banke</span>
+        <span style="color: var(--muted); font-size: 0.85rem;">napr. +1 % banke</span>
       </div>
-      <div id="effective-rate-display" class="rate-status">Efektívny kurz: ...</div>
+      <div id="effective-rates-display" class="rate-status">Efektívne kurzy pripravené</div>
     </div>
 
     <div class="stat-box" style="text-align: right;">
       <label>Rýchla správa</label>
-      <button class="btn btn-outline" onclick="addDefaultRow()">+ Pridať profil</button>
+      <button class="btn btn-outline" onclick="addDefaultRow()">+ Pridať dosku</button>
     </div>
   </div>
 
@@ -322,86 +353,119 @@
     <table>
       <thead>
         <tr>
-          <th style="width: 240px;">Profil / Doska</th>
-          <th style="width: 100px;">Šírka (mm)</th>
-          <th style="width: 130px; text-align: right;">Cena PLN / bm</th>
-          <th style="width: 160px; text-align: right;">Základ EUR (bm / m²)</th>
-          <th style="width: 250px;">Zľava</th>
-          <th style="width: 160px; text-align: right;">Po zľave EUR (bm / m²)</th>
-          <th style="width: 50px; text-align: center;"></th>
+          <th style="width: 180px;">Profil / Doska</th>
+          <th style="width: 80px;">Mena</th>
+          <th style="width: 85px;">Šírka (mm)</th>
+          <th style="width: 110px; text-align: right;">Cena / bm</th>
+          <th style="width: 110px; text-align: right;">Cena / m²</th>
+          <th style="width: 135px; text-align: right;">Základ EUR (bm | m²)</th>
+          <th style="width: 300px;">Zľava</th>
+          <th style="width: 145px; text-align: right;">Po zľave EUR (bm | m²)</th>
+          <th style="width: 40px; text-align: center;"></th>
         </tr>
       </thead>
       <tbody id="rows-tbody">
-        <!-- Riadky generované dynamicky cez JS -->
+        <!-- Generované cez JS -->
       </tbody>
     </table>
 
     <div class="table-actions">
       <button class="btn btn-primary" onclick="addDefaultRow()">+ Pridať ďalšiu dosku</button>
-      <button class="btn btn-outline" onclick="resetToSample()">Obnoviť predvolené položky</button>
+      <button class="btn btn-outline" onclick="resetToSample()">Obnoviť predvolenú dosku (140 mm)</button>
     </div>
   </div>
 </div>
 
 <script>
-  const STORAGE_KEY_ITEMS = "wpc_calc_items_v1";
-  const STORAGE_KEY_RATE = "wpc_calc_rate_v1";
-  const PRESET_DISCOUNTS = [0, 5, 10, 20, 30, 40];
+  const STORAGE_KEY_ITEMS = "wpc_calc_items_v6";
+  const STORAGE_KEY_RATES = "wpc_calc_rates_v6";
+  
+  const PRESET_DISCOUNTS = [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50];
 
   let state = {
-    baseRate: 0.2330,
-    rateUpdatedText: "Zatiaľ neaktualizované",
+    ratePLN: 0.2330,
+    rateUSD: 0.8650,
+    rateDate: "Zatiaľ neaktualizované",
     items: []
   };
 
+  // Referenčné hodnoty: 140 mm šírka, 21.63 PLN/bm, 154.47 PLN/m²
   const sampleItems = [
-    { id: "1", name: "WPC Komora Standard 140x22", widthMm: 140, pricePln: 38.50, discount: 10 },
-    { id: "2", name: "WPC Plný profil Premium 150x20", widthMm: 150, pricePln: 58.00, discount: 20 },
-    { id: "3", name: "WPC Masív Extra 160x23", widthMm: 160, pricePln: 64.00, discount: 2.5 }
+    { 
+      id: "1", 
+      name: "WPC doska", 
+      currency: "PLN",
+      widthMm: 140, 
+      priceBm: 21.63, 
+      priceM2: 154.47, 
+      lastEdited: "bm",
+      discount: 0 
+    }
   ];
 
-  async function fetchLiveRate() {
-    const statusEl = document.getElementById("rate-date");
-    statusEl.innerText = "Sťahujem kurz z ECB...";
+  async function fetchLiveRates() {
+    const statusPln = document.getElementById("rate-date-pln");
+    const statusUsd = document.getElementById("rate-date-usd");
+    statusPln.innerText = "Sťahujem z ECB...";
+    statusUsd.innerText = "Sťahujem z ECB...";
+
     try {
-      const res = await fetch("https://api.frankfurter.dev/v1/latest?from=PLN&to=EUR");
-      if (!res.ok) throw new Error("Chyba siete pri sťahovaní");
-      const data = await res.json();
-      
-      const rate = data.rates.EUR;
-      state.baseRate = rate;
-      state.rateUpdatedText = `ECB kurz zo dňa: ${data.date}`;
-      
-      document.getElementById("ecb-rate").value = rate.toFixed(4);
-      statusEl.innerText = state.rateUpdatedText;
-      
-      saveRateToStorage();
+      const [resPln, resUsd] = await Promise.all([
+        fetch("https://api.frankfurter.dev/v1/latest?from=PLN&to=EUR"),
+        fetch("https://api.frankfurter.dev/v1/latest?from=USD&to=EUR")
+      ]);
+
+      if (!resPln.ok || !resUsd.ok) throw new Error("Chyba siete");
+
+      const dataPln = await resPln.json();
+      const dataUsd = await resUsd.json();
+
+      state.ratePLN = dataPln.rates.EUR;
+      state.rateUSD = dataUsd.rates.EUR;
+      state.rateDate = `ECB dátum: ${dataPln.date}`;
+
+      document.getElementById("rate-pln").value = state.ratePLN.toFixed(4);
+      document.getElementById("rate-usd").value = state.rateUSD.toFixed(4);
+
+      statusPln.innerText = state.rateDate;
+      statusUsd.innerText = state.rateDate;
+
+      saveRatesToStorage();
       renderAll();
     } catch (err) {
-      console.warn("Nepodarilo sa stiahnuť živý kurz, používam lokálny.", err);
-      statusEl.innerText = "Offline režim (použitý uložený/manuálny kurz)";
+      statusPln.innerText = "Lokálny / offline kurz";
+      statusUsd.innerText = "Lokálny / offline kurz";
       renderAll();
     }
   }
 
-  function getEffectiveRate() {
-    const base = parseFloat(document.getElementById("ecb-rate").value) || state.baseRate;
+  function getEffectiveRates() {
+    const basePln = parseFloat(document.getElementById("rate-pln").value) || state.ratePLN;
+    const baseUsd = parseFloat(document.getElementById("rate-usd").value) || state.rateUSD;
     const bufferPercent = parseFloat(document.getElementById("buffer-percent").value) || 0;
-    return base * (1 + (bufferPercent / 100));
+    const mult = 1 + (bufferPercent / 100);
+
+    return {
+      PLN: basePln * mult,
+      USD: baseUsd * mult
+    };
   }
 
   function manualRateChanged() {
-    state.baseRate = parseFloat(document.getElementById("ecb-rate").value) || state.baseRate;
-    state.rateUpdatedText = "Manuálne nastavený kurz";
-    document.getElementById("rate-date").innerText = state.rateUpdatedText;
-    saveRateToStorage();
+    state.ratePLN = parseFloat(document.getElementById("rate-pln").value) || state.ratePLN;
+    state.rateUSD = parseFloat(document.getElementById("rate-usd").value) || state.rateUSD;
+    state.rateDate = "Manuálne upravený kurz";
+    document.getElementById("rate-date-pln").innerText = state.rateDate;
+    document.getElementById("rate-date-usd").innerText = state.rateDate;
+    saveRatesToStorage();
     renderAll();
   }
 
-  function saveRateToStorage() {
-    localStorage.setItem(STORAGE_KEY_RATE, JSON.stringify({
-      rate: state.baseRate,
-      text: state.rateUpdatedText
+  function saveRatesToStorage() {
+    localStorage.setItem(STORAGE_KEY_RATES, JSON.stringify({
+      ratePLN: state.ratePLN,
+      rateUSD: state.rateUSD,
+      text: state.rateDate
     }));
   }
 
@@ -410,14 +474,17 @@
   }
 
   function loadStorageData() {
-    const savedRate = localStorage.getItem(STORAGE_KEY_RATE);
-    if (savedRate) {
+    const savedRates = localStorage.getItem(STORAGE_KEY_RATES);
+    if (savedRates) {
       try {
-        const parsed = JSON.parse(savedRate);
-        state.baseRate = parsed.rate || 0.2330;
-        state.rateUpdatedText = parsed.text || "Lokálne uložený kurz";
-        document.getElementById("ecb-rate").value = state.baseRate.toFixed(4);
-        document.getElementById("rate-date").innerText = state.rateUpdatedText;
+        const parsed = JSON.parse(savedRates);
+        state.ratePLN = parsed.ratePLN || 0.2330;
+        state.rateUSD = parsed.rateUSD || 0.8650;
+        state.rateDate = parsed.text || "Uložený kurz";
+        document.getElementById("rate-pln").value = state.ratePLN.toFixed(4);
+        document.getElementById("rate-usd").value = state.rateUSD.toFixed(4);
+        document.getElementById("rate-date-pln").innerText = state.rateDate;
+        document.getElementById("rate-date-usd").innerText = state.rateDate;
       } catch (e) {}
     }
 
@@ -433,12 +500,16 @@
     }
   }
 
+  // Pridanie novej dosky s rovnakými referenčnými hodnotami
   function addDefaultRow() {
     state.items.push({
       id: Date.now().toString(),
-      name: "Nový WPC profil",
+      name: "WPC doska",
+      currency: "PLN",
       widthMm: 140,
-      pricePln: 40.00,
+      priceBm: 21.63,
+      priceM2: 154.47,
+      lastEdited: "bm",
       discount: 0
     });
     saveItemsToStorage();
@@ -446,13 +517,17 @@
   }
 
   function removeRow(id) {
+    if (state.items.length <= 1) {
+      alert("V tabuľke musí zostať aspoň jedna doska.");
+      return;
+    }
     state.items = state.items.filter(item => item.id !== id);
     saveItemsToStorage();
     renderAll();
   }
 
   function resetToSample() {
-    if (confirm("Chcete obnoviť predvolené vzorové položky?")) {
+    if (confirm("Chcete obnoviť predvolenú dosku (140 mm, 21.63 PLN/bm)?")) {
       state.items = JSON.parse(JSON.stringify(sampleItems));
       saveItemsToStorage();
       renderAll();
@@ -463,34 +538,61 @@
     const item = state.items.find(it => it.id === id);
     if (!item) return;
 
-    if (field === 'name') item.name = value;
-    else if (field === 'widthMm') item.widthMm = parseFloat(value) || 0;
-    else if (field === 'pricePln') item.pricePln = parseFloat(value) || 0;
-    else if (field === 'discount') item.discount = parseFloat(value) || 0;
+    if (field === 'name') {
+      item.name = value;
+    } else if (field === 'currency') {
+      item.currency = value;
+    } else if (field === 'widthMm') {
+      const w = parseFloat(value) || 0;
+      item.widthMm = w;
+      if (w > 0) {
+        if (item.lastEdited === 'm2') {
+          item.priceBm = +(item.priceM2 * (w / 1000)).toFixed(2);
+        } else {
+          item.priceM2 = +(item.priceBm * (1000 / w)).toFixed(2);
+        }
+      }
+    } else if (field === 'priceBm') {
+      const bm = parseFloat(value) || 0;
+      item.priceBm = bm;
+      item.lastEdited = 'bm';
+      if (item.widthMm > 0) {
+        item.priceM2 = +(bm * (1000 / item.widthMm)).toFixed(2);
+      }
+    } else if (field === 'priceM2') {
+      const m2 = parseFloat(value) || 0;
+      item.priceM2 = m2;
+      item.lastEdited = 'm2';
+      if (item.widthMm > 0) {
+        item.priceBm = +(m2 * (item.widthMm / 1000)).toFixed(2);
+      }
+    } else if (field === 'discount') {
+      item.discount = parseFloat(value) || 0;
+    }
 
     saveItemsToStorage();
     renderAll();
   }
 
   function renderAll() {
-    const rate = getEffectiveRate();
-    document.getElementById("effective-rate-display").innerText = `Efektívny kurz: 1 PLN = ${rate.toFixed(4)} EUR`;
+    const effRates = getEffectiveRates();
+    document.getElementById("effective-rates-display").innerText = 
+      `PLN: ${effRates.PLN.toFixed(4)} € | USD: ${effRates.USD.toFixed(4)} €`;
 
     const tbody = document.getElementById("rows-tbody");
     tbody.innerHTML = "";
 
     state.items.forEach(item => {
-      // 1. Výpočet základnej ceny v EUR
-      const eurBaseBm = item.pricePln * rate;
-      const bmPerM2 = item.widthMm > 0 ? (1000 / item.widthMm) : 0;
-      const eurBaseM2 = eurBaseBm * bmPerM2;
+      const cur = item.currency || "PLN";
+      const activeRate = effRates[cur] || effRates.PLN;
 
-      // 2. Výpočet ceny po zľave
+      const eurBaseBm = (item.priceBm || 0) * activeRate;
+      const eurBaseM2 = (item.priceM2 || 0) * activeRate;
+
       const discountRatio = (item.discount || 0) / 100;
       const eurDiscBm = eurBaseBm * (1 - discountRatio);
       const eurDiscM2 = eurBaseM2 * (1 - discountRatio);
 
-      // HTML pre tlačidlá zľavy
       const pillButtonsHtml = PRESET_DISCOUNTS.map(d => {
         const isActive = (item.discount === d);
         return `<button type="button" class="pill-btn ${isActive ? 'active' : ''}" onclick="updateItem('${item.id}', 'discount', ${d})">${d}%</button>`;
@@ -500,15 +602,25 @@
       tr.innerHTML = `
         <td>
           <input type="text" class="table-input" value="${escapeHtml(item.name)}" onchange="updateItem('${item.id}', 'name', this.value)">
+          <span class="input-mode-badge">${item.lastEdited === 'm2' ? 'Zadané v m²' : 'Zadané v bm'}</span>
+        </td>
+        <td>
+          <select class="currency-select" onchange="updateItem('${item.id}', 'currency', this.value)">
+            <option value="PLN" ${cur === 'PLN' ? 'selected' : ''}>PLN</option>
+            <option value="USD" ${cur === 'USD' ? 'selected' : ''}>USD</option>
+          </select>
         </td>
         <td>
           <input type="number" step="1" class="table-input num" value="${item.widthMm}" onchange="updateItem('${item.id}', 'widthMm', this.value)">
         </td>
         <td>
-          <input type="number" step="0.01" class="table-input num" value="${item.pricePln.toFixed(2)}" onchange="updateItem('${item.id}', 'pricePln', this.value)">
+          <input type="number" step="0.01" class="table-input num" value="${(item.priceBm || 0).toFixed(2)}" onchange="updateItem('${item.id}', 'priceBm', this.value)">
+        </td>
+        <td>
+          <input type="number" step="0.01" class="table-input num" value="${(item.priceM2 || 0).toFixed(2)}" onchange="updateItem('${item.id}', 'priceM2', this.value)">
         </td>
         <td class="val-cell">
-          <strong>${eurBaseBm.toFixed(2)} €</strong> <span style="font-size:0.8rem; color:var(--muted);">/ bm</span>
+          <strong>${eurBaseBm.toFixed(2)} €</strong> <span style="font-size:0.75rem; color:var(--muted);">/ bm</span>
           <span class="price-sub">${eurBaseM2.toFixed(2)} € / m²</span>
         </td>
         <td>
@@ -517,14 +629,14 @@
               ${pillButtonsHtml}
             </div>
             <div class="custom-discount-wrap">
-              <span>Iná zľava:</span>
+              <span>Iná:</span>
               <input type="number" step="0.5" min="0" max="100" value="${item.discount}" onchange="updateItem('${item.id}', 'discount', this.value)">
               <span>%</span>
             </div>
           </div>
         </td>
         <td class="val-cell">
-          <div class="price-final">${eurDiscBm.toFixed(2)} € <span style="font-size:0.8rem; font-weight:normal;">/ bm</span></div>
+          <div class="price-final">${eurDiscBm.toFixed(2)} € <span style="font-size:0.75rem; font-weight:normal;">/ bm</span></div>
           <span class="price-sub" style="font-weight: 600; color: var(--text);">${eurDiscM2.toFixed(2)} € / m²</span>
         </td>
         <td style="text-align: center;">
@@ -541,11 +653,10 @@
     }[m]));
   }
 
-  // Inicializácia pri načítaní
   window.addEventListener("DOMContentLoaded", () => {
     loadStorageData();
     renderAll();
-    fetchLiveRate();
+    fetchLiveRates();
   });
 </script>
 
