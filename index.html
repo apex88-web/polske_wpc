@@ -613,9 +613,10 @@
         </td>
         <td>
           <select class="currency-select" onchange="updateItem('${item.id}', 'currency', this.value)">
-            <option value="PLN" ${cur === 'PLN' ? 'selected' : ''}>PLN</option>
-            <option value="USD" ${cur === 'USD' ? 'selected' : ''}>USD</option>
             <option value="EUR" ${cur === 'EUR' ? 'selected' : ''}>EUR</option>
+            <option value="USD" ${cur === 'USD' ? 'selected' : ''}>USD</option>
+            <option value="PLN" ${cur === 'PLN' ? 'selected' : ''}>PLN</option>
+            
           </select>
         </td>
         <td>
