@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>WPC Kalkulátor – PLN / USD na EUR 4 Deni with ❤️</title>
+  <title>WPC Kalkulátor – PLN / USD / EUR na EUR 4 Deni with ❤️</title>
   <style>
     :root {
       --primary: #2563eb;
@@ -206,12 +206,18 @@
     }
 
     .currency-select {
-      width: 75px;
+      width: 80px;
       padding: 7px 6px;
       border: 1px solid var(--border);
       border-radius: 6px;
       font-weight: 600;
       background: #f8fafc;
+      cursor: pointer;
+    }
+
+    .currency-select:focus {
+      outline: none;
+      border-color: var(--primary);
     }
 
     .input-mode-badge {
@@ -307,7 +313,7 @@
 
 <div class="container">
   <header>
-    <h1>WPC Kalkulátor: Cenník & Kurzy (PLN / USD → EUR) 4 Deni with ❤️</h1>
+    <h1>WPC Kalkulátor: Cenník & Kurzy (PLN / USD / EUR → EUR) 4 Deni with ❤️</h1>
     <p class="subtitle">Obojsmerný prepočet ceny za bežný meter (bm) a surový m² (bez medzery)</p>
   </header>
 
@@ -354,7 +360,7 @@
       <thead>
         <tr>
           <th style="width: 180px;">Profil / Doska</th>
-          <th style="width: 80px;">Mena</th>
+          <th style="width: 90px;">Mena</th>
           <th style="width: 85px;">Šírka (mm)</th>
           <th style="width: 110px; text-align: right;">Cena / bm</th>
           <th style="width: 110px; text-align: right;">Cena / m²</th>
@@ -377,14 +383,15 @@
 </div>
 
 <script>
-  const STORAGE_KEY_ITEMS = "wpc_calc_items_v6";
-  const STORAGE_KEY_RATES = "wpc_calc_rates_v6";
+  const STORAGE_KEY_ITEMS = "wpc_calc_items_v7";
+  const STORAGE_KEY_RATES = "wpc_calc_rates_v7";
   
   const PRESET_DISCOUNTS = [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50];
 
   let state = {
     ratePLN: 0.2330,
     rateUSD: 0.8650,
+    rateEUR: 1.0000,
     rateDate: "Zatiaľ neaktualizované",
     items: []
   };
@@ -403,262 +410,4 @@
     }
   ];
 
-  async function fetchLiveRates() {
-    const statusPln = document.getElementById("rate-date-pln");
-    const statusUsd = document.getElementById("rate-date-usd");
-    statusPln.innerText = "Sťahujem z ECB...";
-    statusUsd.innerText = "Sťahujem z ECB...";
-
-    try {
-      const [resPln, resUsd] = await Promise.all([
-        fetch("https://api.frankfurter.dev/v1/latest?from=PLN&to=EUR"),
-        fetch("https://api.frankfurter.dev/v1/latest?from=USD&to=EUR")
-      ]);
-
-      if (!resPln.ok || !resUsd.ok) throw new Error("Chyba siete");
-
-      const dataPln = await resPln.json();
-      const dataUsd = await resUsd.json();
-
-      state.ratePLN = dataPln.rates.EUR;
-      state.rateUSD = dataUsd.rates.EUR;
-      state.rateDate = `ECB dátum: ${dataPln.date}`;
-
-      document.getElementById("rate-pln").value = state.ratePLN.toFixed(4);
-      document.getElementById("rate-usd").value = state.rateUSD.toFixed(4);
-
-      statusPln.innerText = state.rateDate;
-      statusUsd.innerText = state.rateDate;
-
-      saveRatesToStorage();
-      renderAll();
-    } catch (err) {
-      statusPln.innerText = "Lokálny / offline kurz";
-      statusUsd.innerText = "Lokálny / offline kurz";
-      renderAll();
-    }
-  }
-
-  function getEffectiveRates() {
-    const basePln = parseFloat(document.getElementById("rate-pln").value) || state.ratePLN;
-    const baseUsd = parseFloat(document.getElementById("rate-usd").value) || state.rateUSD;
-    const bufferPercent = parseFloat(document.getElementById("buffer-percent").value) || 0;
-    const mult = 1 + (bufferPercent / 100);
-
-    return {
-      PLN: basePln * mult,
-      USD: baseUsd * mult
-    };
-  }
-
-  function manualRateChanged() {
-    state.ratePLN = parseFloat(document.getElementById("rate-pln").value) || state.ratePLN;
-    state.rateUSD = parseFloat(document.getElementById("rate-usd").value) || state.rateUSD;
-    state.rateDate = "Manuálne upravený kurz";
-    document.getElementById("rate-date-pln").innerText = state.rateDate;
-    document.getElementById("rate-date-usd").innerText = state.rateDate;
-    saveRatesToStorage();
-    renderAll();
-  }
-
-  function saveRatesToStorage() {
-    localStorage.setItem(STORAGE_KEY_RATES, JSON.stringify({
-      ratePLN: state.ratePLN,
-      rateUSD: state.rateUSD,
-      text: state.rateDate
-    }));
-  }
-
-  function saveItemsToStorage() {
-    localStorage.setItem(STORAGE_KEY_ITEMS, JSON.stringify(state.items));
-  }
-
-  function loadStorageData() {
-    const savedRates = localStorage.getItem(STORAGE_KEY_RATES);
-    if (savedRates) {
-      try {
-        const parsed = JSON.parse(savedRates);
-        state.ratePLN = parsed.ratePLN || 0.2330;
-        state.rateUSD = parsed.rateUSD || 0.8650;
-        state.rateDate = parsed.text || "Uložený kurz";
-        document.getElementById("rate-pln").value = state.ratePLN.toFixed(4);
-        document.getElementById("rate-usd").value = state.rateUSD.toFixed(4);
-        document.getElementById("rate-date-pln").innerText = state.rateDate;
-        document.getElementById("rate-date-usd").innerText = state.rateDate;
-      } catch (e) {}
-    }
-
-    const savedItems = localStorage.getItem(STORAGE_KEY_ITEMS);
-    if (savedItems) {
-      try {
-        state.items = JSON.parse(savedItems);
-      } catch (e) {
-        state.items = [...sampleItems];
-      }
-    } else {
-      state.items = [...sampleItems];
-    }
-  }
-
-  // Pridanie novej dosky s rovnakými referenčnými hodnotami
-  function addDefaultRow() {
-    state.items.push({
-      id: Date.now().toString(),
-      name: "WPC doska",
-      currency: "PLN",
-      widthMm: 140,
-      priceBm: 21.63,
-      priceM2: 154.47,
-      lastEdited: "bm",
-      discount: 0
-    });
-    saveItemsToStorage();
-    renderAll();
-  }
-
-  function removeRow(id) {
-    if (state.items.length <= 1) {
-      alert("V tabuľke musí zostať aspoň jedna doska.");
-      return;
-    }
-    state.items = state.items.filter(item => item.id !== id);
-    saveItemsToStorage();
-    renderAll();
-  }
-
-  function resetToSample() {
-    if (confirm("Chcete obnoviť predvolenú dosku (140 mm, 21.63 PLN/bm)?")) {
-      state.items = JSON.parse(JSON.stringify(sampleItems));
-      saveItemsToStorage();
-      renderAll();
-    }
-  }
-
-  function updateItem(id, field, value) {
-    const item = state.items.find(it => it.id === id);
-    if (!item) return;
-
-    if (field === 'name') {
-      item.name = value;
-    } else if (field === 'currency') {
-      item.currency = value;
-    } else if (field === 'widthMm') {
-      const w = parseFloat(value) || 0;
-      item.widthMm = w;
-      if (w > 0) {
-        if (item.lastEdited === 'm2') {
-          item.priceBm = +(item.priceM2 * (w / 1000)).toFixed(2);
-        } else {
-          item.priceM2 = +(item.priceBm * (1000 / w)).toFixed(2);
-        }
-      }
-    } else if (field === 'priceBm') {
-      const bm = parseFloat(value) || 0;
-      item.priceBm = bm;
-      item.lastEdited = 'bm';
-      if (item.widthMm > 0) {
-        item.priceM2 = +(bm * (1000 / item.widthMm)).toFixed(2);
-      }
-    } else if (field === 'priceM2') {
-      const m2 = parseFloat(value) || 0;
-      item.priceM2 = m2;
-      item.lastEdited = 'm2';
-      if (item.widthMm > 0) {
-        item.priceBm = +(m2 * (item.widthMm / 1000)).toFixed(2);
-      }
-    } else if (field === 'discount') {
-      item.discount = parseFloat(value) || 0;
-    }
-
-    saveItemsToStorage();
-    renderAll();
-  }
-
-  function renderAll() {
-    const effRates = getEffectiveRates();
-    document.getElementById("effective-rates-display").innerText = 
-      `PLN: ${effRates.PLN.toFixed(4)} € | USD: ${effRates.USD.toFixed(4)} €`;
-
-    const tbody = document.getElementById("rows-tbody");
-    tbody.innerHTML = "";
-
-    state.items.forEach(item => {
-      const cur = item.currency || "PLN";
-      const activeRate = effRates[cur] || effRates.PLN;
-
-      const eurBaseBm = (item.priceBm || 0) * activeRate;
-      const eurBaseM2 = (item.priceM2 || 0) * activeRate;
-
-      const discountRatio = (item.discount || 0) / 100;
-      const eurDiscBm = eurBaseBm * (1 - discountRatio);
-      const eurDiscM2 = eurBaseM2 * (1 - discountRatio);
-
-      const pillButtonsHtml = PRESET_DISCOUNTS.map(d => {
-        const isActive = (item.discount === d);
-        return `<button type="button" class="pill-btn ${isActive ? 'active' : ''}" onclick="updateItem('${item.id}', 'discount', ${d})">${d}%</button>`;
-      }).join("");
-
-      const tr = document.createElement("tr");
-      tr.innerHTML = `
-        <td>
-          <input type="text" class="table-input" value="${escapeHtml(item.name)}" onchange="updateItem('${item.id}', 'name', this.value)">
-          <span class="input-mode-badge">${item.lastEdited === 'm2' ? 'Zadané v m²' : 'Zadané v bm'}</span>
-        </td>
-        <td>
-          <select class="currency-select" onchange="updateItem('${item.id}', 'currency', this.value)">
-            <option value="PLN" ${cur === 'PLN' ? 'selected' : ''}>PLN</option>
-            <option value="USD" ${cur === 'USD' ? 'selected' : ''}>USD</option>
-          </select>
-        </td>
-        <td>
-          <input type="number" step="1" class="table-input num" value="${item.widthMm}" onchange="updateItem('${item.id}', 'widthMm', this.value)">
-        </td>
-        <td>
-          <input type="number" step="0.01" class="table-input num" value="${(item.priceBm || 0).toFixed(2)}" onchange="updateItem('${item.id}', 'priceBm', this.value)">
-        </td>
-        <td>
-          <input type="number" step="0.01" class="table-input num" value="${(item.priceM2 || 0).toFixed(2)}" onchange="updateItem('${item.id}', 'priceM2', this.value)">
-        </td>
-        <td class="val-cell">
-          <strong>${eurBaseBm.toFixed(2)} €</strong> <span style="font-size:0.75rem; color:var(--muted);">/ bm</span>
-          <span class="price-sub">${eurBaseM2.toFixed(2)} € / m²</span>
-        </td>
-        <td>
-          <div class="discount-picker">
-            <div class="discount-buttons">
-              ${pillButtonsHtml}
-            </div>
-            <div class="custom-discount-wrap">
-              <span>Iná:</span>
-              <input type="number" step="0.5" min="0" max="100" value="${item.discount}" onchange="updateItem('${item.id}', 'discount', this.value)">
-              <span>%</span>
-            </div>
-          </div>
-        </td>
-        <td class="val-cell">
-          <div class="price-final">${eurDiscBm.toFixed(2)} € <span style="font-size:0.75rem; font-weight:normal;">/ bm</span></div>
-          <span class="price-sub" style="font-weight: 600; color: var(--text);">${eurDiscM2.toFixed(2)} € / m²</span>
-        </td>
-        <td style="text-align: center;">
-          <button class="btn btn-danger" title="Zmazať riadok" onclick="removeRow('${item.id}')">✕</button>
-        </td>
-      `;
-      tbody.appendChild(tr);
-    });
-  }
-
-  function escapeHtml(str) {
-    return (str || '').replace(/[&<>"']/g, m => ({
-      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
-    }[m]));
-  }
-
-  window.addEventListener("DOMContentLoaded", () => {
-    loadStorageData();
-    renderAll();
-    fetchLiveRates();
-  });
-</script>
-
-</body>
-</html>
+  async function fetch
